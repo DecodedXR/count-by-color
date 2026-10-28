@@ -13,6 +13,7 @@ Count or sum cells by background or text color in Google Sheets with two free cu
 ## Guides
 
 - [How to count and sum cells by color in Google Sheets](count-cells-by-color-google-sheets.html)
+- [A free Function by Color alternative](function-by-color-alternative-google-sheets.html)
 
 ## Get it
 
