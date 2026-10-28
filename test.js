@@ -16,4 +16,15 @@ assert.equal(ctx.countByColor_(colors, '#f00'), 2);
 assert.equal(ctx.sumByColor_([[5, 1], ['x', 2]], colors, '#ff0000'), 5); // text in a red cell is skipped
 assert.equal(ctx.sumByColor_([[1.5, 1], [2.5, 2]], colors, '#ff0000'), 4);
 assert.equal(ctx.formulaArgs_('=MYSUMBYCOLOR(A1,B1)', 'SUMBYCOLOR'), null);
+// Refresh puts every formula back even when clearing a cell fails partway (e.g. a protected cell).
+const r2 = {}; vm.runInNewContext(fs.readFileSync(__dirname + '/Code.gs', 'utf8'), r2);
+const formulas = [['=COUNTBYCOLOR(A1:A2,B1)', '=SUMBYCOLOR(A1:A2,B1)', '=SUMBYCOLOR(A3:A4,B1)']];
+const cells = formulas[0].slice();
+let clears = 0;
+const range = { getFormulas: () => formulas, getCell: (r, c) => ({
+  setValue() { if (++clears === 3) throw new Error('protected'); cells[c - 1] = ''; },
+  setFormula(f) { cells[c - 1] = f; } }) };
+r2.SpreadsheetApp = { getActiveSpreadsheet: () => ({ getSheets: () => [{ getDataRange: () => range }] }), flush() {}, getActive: () => ({ toast() {} }) };
+assert.throws(() => r2.refreshColorFormulas(), /protected/);
+assert.deepEqual(cells, formulas[0]);                                        // nothing left blank
 console.log('ok');
