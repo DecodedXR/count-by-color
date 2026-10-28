@@ -125,9 +125,13 @@ function refreshColorFormulas() {
     const formulas = range.getFormulas();
     const hits = [];
     formulas.forEach((row, r) => row.forEach((f, c) => { if (FUNCTIONS.test(f)) hits.push([r + 1, c + 1, f]); }));
-    hits.forEach(([r, c]) => range.getCell(r, c).setValue(''));
-    SpreadsheetApp.flush();
-    hits.forEach(([r, c, f]) => range.getCell(r, c).setFormula(f));
+    const cleared = [];
+    try {
+      hits.forEach(h => { range.getCell(h[0], h[1]).setValue(''); cleared.push(h); });
+      SpreadsheetApp.flush();
+    } finally { // even if a cell can't be cleared (protected range) or the run stops, put every formula back
+      cleared.forEach(([r, c, f]) => range.getCell(r, c).setFormula(f));
+    }
     n += hits.length;
   });
   SpreadsheetApp.getActive().toast(n + ' color formula' + (n === 1 ? '' : 's') + ' refreshed.');
