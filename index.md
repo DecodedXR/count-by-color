@@ -18,3 +18,5 @@ Count or sum cells by background or text color in Google Sheets with two free cu
 ## Get it
 
 The script and full instructions are on GitHub: [DecodedXR/count-by-color](https://github.com/DecodedXR/count-by-color). It's MIT licensed and free.
+
+Need it to work a bit differently for your sheet? [Get a custom version written for you ($49)](https://decodedxr.github.io/free-google-sheets-scripts/custom-google-sheets-script.html): tested, within 3 days, or a full refund.
